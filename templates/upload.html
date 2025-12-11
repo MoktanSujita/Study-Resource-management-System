@@ -2,29 +2,37 @@
 <html>
 <head>
   <title>Upload Material</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
 
 <div class="navbar">Upload Study Materials</div>
 
 <div class="container">
-  <form>
+  <form action ="../php/add-Material.php" method="POST" enctype ="multipart/form-data">
     <label>Title</label>
     <input type="text">
 
     <!--categorize with semester and subject (names and all)-->
-    <label>Category</label>
-    <select>
-      <option>Programming</option>
-      <option>Math</option>
-      <option>Networking</option>
+    <label>Select Semester:</label>
+    <select name ="semester" id="semester" required>
+      <option>Semester I </option>
+      <option>Semester II </option>
+      <option>Semester III </option>
+      <option>Semester IV </option>
+      <option>Semester V </option>
+      <option>Semester VI </option>
+      <option>Semester VII</option>
+      <option>Semester VIII</option>
     </select>
 
-    <label>Upload File</label>
-    <input type="file">
+    <label for="subject">Subject Name:</label>
+    <input type="text" name="subject" id="subject" placeholder="e.g. Date Structures and Algorithm" required>
 
-    <button class="btn">Upload</button>
+    <label>Upload File</label>
+    <input type="file" name="file" id="file" required>
+
+    <button class="btn" name="upload">Upload</button>
   </form>
 </div>
 
