@@ -33,8 +33,8 @@
 
     <div class="collapse navbar-collapse" id="menu">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
-        <li class="nav-item"><a class="nav-link" href="register.php">Register</a></li>
+        <li class="nav-item"><a class="nav-link" href="templates/login.html">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="templates/register.html">Register</a></li>
       </ul>
     </div>
   </div>
