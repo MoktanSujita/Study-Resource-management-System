@@ -44,7 +44,7 @@
   <div>
     <h1>Access Study Materials Anytime, Anywhere</h1>
     <p class="mt-3">A complete platform for notes, question papers, announcements & downloads.</p>
-    <a href="login.php" class="btn btn-primary btn-lg mt-4">Get Started</a>
+    <a href="templates/login.html" class="btn btn-primary btn-lg mt-4">Get Started</a>
   </div>
 </div>
 
