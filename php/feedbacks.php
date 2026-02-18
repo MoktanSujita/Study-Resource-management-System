@@ -1,0 +1,42 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+session_start();
+include 'config.php';
+
+if(!isset($_SESSION['user_id'])){
+    die("You must be logged in.");
+}
+
+if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+    $feedback = trim($_POST['feedback']);
+    $user_id = $_SESSION['user_id'];
+
+    if(empty($feedback)){
+        die("Feedback cannot be empty.");
+    }
+
+    try {
+        $stmt = $conn->prepare("
+            INSERT INTO tbl_feedback (feedback_text, user_id) 
+            VALUES (?, ?)
+        ");
+        $stmt->execute([$feedback, $user_id]);
+
+        echo "<script>
+                alert('Feedback submitted successfully!');
+                window.location='student-dashboard.php';
+              </script>";
+        exit;
+
+    } catch(PDOException $e){
+        die("Database Error: " . $e->getMessage());
+    }
+
+} else {
+    header("Location: student-dashboard.php");
+    exit;
+}
+?>
