@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 require_once 'auth.php';
 
 $id = $_GET['id'] ?? 0;
@@ -11,7 +12,17 @@ $stmt->execute([':id' => $id]);
 $material = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Access decision
-$hasAccess = $material && isMaterialOwner($conn, $id);
+// Fix: define $hasAccess safely
+$current_user_id = $_SESSION['user_id'] ?? null;
+$is_admin = ($_SESSION['role'] ?? '') === 'admin';
+
+$hasAccess = false;
+if ($material) {
+    // Owner or admin can edit
+    if ($is_admin || $material['user_id'] == $current_user_id) {
+        $hasAccess = true;
+    }
+}
 ?>
 
 <!DOCTYPE html>

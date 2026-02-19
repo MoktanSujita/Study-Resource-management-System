@@ -9,13 +9,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 // Validate ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    header("Location: ../templates/admin-dashboard.html?error=invalid_id");
+    header("Location: ../templates/admin-dashboard.php?error=invalid_id");
     exit();
 }
 
 $user_id = (int) $_GET['id'];
 
-// 3️⃣ Prevent admin from deleting themselves
+// Prevent admin from deleting themselves
 if ($user_id == $_SESSION['user_id']) {
     header("Location: admin-dashboard.php?error=cannot_delete_self");
     exit();

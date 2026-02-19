@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_announcement']
 
         echo "<script>
                 alert('Announcement posted successfully!');
-                window.location.href='../templates/admin-dashboard.html';
+                window.location.href='admin-dashboard.php';
               </script>";
         exit();
 

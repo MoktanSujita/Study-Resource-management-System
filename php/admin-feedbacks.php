@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'config.php';
+include 'config.php'; 'auth.php'; // Ensure this checks for admin access
 
 if(!isset($_SESSION['admin_id'])){
     die("Admin login required.");
@@ -20,33 +20,30 @@ try {
 
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
     <title>Admin Feedback Panel</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS (same as manage accounts) -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/style.css" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="../favicon.png">
-</head>
+    </head>
 
 <body>
-<div class="page-wrapper">
-<div class="container mt-5">
+      <div class="page-wrapper">
+         <div class="container mt-5">
+             <h2 class="mb-4">Student Feedbacks</h2>
+              <a href="admin-dashboard.php" class="btn btn-secondary mb-4">
+                 Back to Dashboard
+                </a>
+              <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
 
-    <h2 class="mb-4">Student Feedbacks</h2>
-
-    <a href="../templates/admin-dashboard.html" class="btn btn-secondary mb-4">
-        Back to Dashboard
-    </a>
-
-    <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
+             <div class="card shadow-sm mb-4">
+                 <div class="card-body">
 
                 <div class="d-flex justify-content-between">
                     <h6 class="fw-bold mb-1">
@@ -73,7 +70,7 @@ try {
 
                 <?php else: ?>
 
-                    <form method="POST" action="respond-feedback.php" class="mt-3">
+                    <form method="POST" action="response.php" class="mt-3">
                         <input type="hidden" name="feedback_id" 
                                value="<?php echo $row['feedback_id']; ?>">
 
@@ -95,10 +92,8 @@ try {
             </div>
         </div>
 
-    <?php endwhile; ?>
+       <?php endwhile; ?>
 
-</div>
-</div>
-
-</body>
+      </div>
+    </body>
 </html>

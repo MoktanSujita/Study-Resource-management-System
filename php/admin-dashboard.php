@@ -1,3 +1,7 @@
+<?php 
+include 'auth.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +84,7 @@
             <div class="admin-card">
                 <i class="bi bi-upload"></i>
                 <h5 class="mb-2">Upload Study Materials</h5>
-                <a href="upload.html">Go to Section →</a>
+                <a href="../templates/upload.html">Go to Section →</a>
             </div>
         </div>
 
@@ -98,7 +102,7 @@
             <div class="admin-card">
                 <i class="bi bi-megaphone"></i>
                 <h5 class="mb-2">Post Announcements</h5>
-                <a href="announcements.html">Post Now →</a>
+                <a href="../templates/announcements.html">Post Now →</a>
             </div>
         </div>
 

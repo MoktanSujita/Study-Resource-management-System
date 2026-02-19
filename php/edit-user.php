@@ -2,12 +2,12 @@
 session_start();
 include 'config.php';
 
-// 1️⃣ Admin check
+//  Admin check
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     die("Access denied. Admins only.");
 }
 
-// 2️⃣ Validate ID
+//  Validate ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: manage-users.php?error=invalid_id");
     exit();
@@ -15,7 +15,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $user_id = (int) $_GET['id'];
 
-// 3️⃣ Fetch user
+//  Fetch user
 $stmt = $conn->prepare("SELECT user_id, username, role FROM tbl_users WHERE user_id = :id");
 $stmt->execute([':id' => $user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,7 +25,7 @@ if (!$user) {
     exit();
 }
 
-// 4️⃣ Handle form submission
+//  Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['role'];
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':id'   => $user_id
         ]);
 
-        header("Location: manage-users.php?success=role_updated");
+        header("Location: manage-accounts.php?success=role_updated");
         exit();
     } catch (PDOException $e) {
         $error = $e->getMessage();
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
         </div>
         <button class="btn btn-primary">Update Role</button>
-        <a href="manage-users.php" class="btn btn-secondary">Cancel</a>
+        <a href="manage-accounts.php" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 </body>

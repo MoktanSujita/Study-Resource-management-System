@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 require_once 'auth.php'; // includes session + config automatically
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update'])) {
@@ -6,8 +7,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update'])) {
     $id    = $_POST['material_id'];
     $title = $_POST['title'];
     $sem   = $_POST['semester'];
-
-    requireMaterialOwner($conn, $id);
 
     // Fetch old file path
     $stmt = $conn->prepare(
