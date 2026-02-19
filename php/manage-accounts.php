@@ -8,7 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 // Fetch all users
-$stmt = $conn->query("SELECT * FROM tbl_users ORDER BY created_at DESC");
+$stmt = $conn->query("SELECT * FROM tbl_users ORDER BY created_at ASC");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -21,43 +21,47 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="icon" type="image/png" href="../favicon.png">
 </head>
 <body>
+<body>
 <div class="page-wrapper">
-<div class="container mt-5">
-    <h2>Manage Users</h2>
-    <a href="../templates/register.html" class="btn btn-success mb-3">Add New User</a>
-    
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($users as $user): ?>
-            <tr>
-                <td><?php echo $user['user_id']; ?></td>
-                <td><?php echo htmlspecialchars($user['username']); ?></td>
-                <td><?php echo htmlspecialchars($user['email']); ?></td>
-                <td><?php echo htmlspecialchars($user['role']); ?></td>
-                <td>
-                    <a href="edit-user.php?id=<?php echo $user['user_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                    <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
-                        <a href="delete-user.php?id=<?php echo $user['user_id']; ?>" 
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-                    <?php else: ?>
-                        <span class="text-muted small">Cannot delete self</span>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+    <div class="container pt-0">
+        <h2 class="mt-0 pt-4">Manage Users</h2>
+        <a href="../templates/register.html" class="btn btn-success mb-3">Add New User</a>
+        
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($users as $user): ?>
+                <tr>
+                    <td><?php echo $user['user_id']; ?></td>
+                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                    <td><?php echo htmlspecialchars($user['email']); ?></td>
+                    <td><?php echo htmlspecialchars($user['role']); ?></td>
+                    <td>
+                        <a href="edit-user.php?id=<?php echo $user['user_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <?php if ($user['user_id'] == $_SESSION['user_id']): ?>
+                            <span class="text-muted small">Cannot delete self</span>
+                        <?php elseif ($user['role'] === 'admin'): ?>
+                            <span class="text-muted small">Cannot delete another admin</span>
+                        <?php else: ?>
+                            <a href="delete-user.php?id=<?php echo $user['user_id']; ?>" 
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>

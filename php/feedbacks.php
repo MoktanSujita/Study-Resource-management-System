@@ -5,38 +5,42 @@ ini_set('display_errors', 1);
 session_start();
 include 'config.php';
 
-if(!isset($_SESSION['user_id'])){
+if (!isset($_SESSION['user_id'])) {
     die("You must be logged in.");
 }
 
-if($_SERVER['REQUEST_METHOD'] == "POST"){
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
     $feedback = trim($_POST['feedback']);
-    $user_id = $_SESSION['user_id'];
+    $user_id  = $_SESSION['user_id'];
 
-    if(empty($feedback)){
-        die("Feedback cannot be empty.");
-    }
+    if (empty($feedback)) {
 
-    try {
-        $stmt = $conn->prepare("
-            INSERT INTO tbl_feedback (feedback_text, user_id) 
-            VALUES (?, ?)
-        ");
-        $stmt->execute([$feedback, $user_id]);
-
-        echo "<script>
-                alert('Feedback submitted successfully!');
-                window.location='student-dashboard.php';
-              </script>";
+        $_SESSION['error'] = "Feedback cannot be empty.";
+        header("Location: student-dashboard.php");
         exit;
 
-    } catch(PDOException $e){
-        die("Database Error: " . $e->getMessage());
-    }
+    } else {
 
-} else {
-    header("Location: student-dashboard.php");
-    exit;
+        try {
+            $stmt = $conn->prepare("
+                INSERT INTO tbl_feedback (feedback_text, user_id) 
+                VALUES (?, ?)
+            ");
+            $stmt->execute([$feedback, $user_id]);
+
+            $_SESSION['success'] = "Feedback submitted successfully!";
+            header("Location: student-dashboard.php");
+            exit;
+
+        } catch (PDOException $e) {
+
+            $_SESSION['error'] = "Database Error occurred.";
+            header("Location: student-dashboard.php");
+            exit;
+        }
+    }
 }
-?>
+
+header("Location: student-dashboard.php");
+exit;

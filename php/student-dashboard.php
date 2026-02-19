@@ -2,13 +2,28 @@
 session_start();
 include 'config.php';
 
-// Example: logged-in user
 if(!isset($_SESSION['username'])){
-    header("Location: ../templates/login.html"); // redirect if not logged in
+    header("Location: ../templates/login.html");
     exit;
 }
+
 $username = $_SESSION['username'];
+
+/* ===== FLASH MESSAGE SYSTEM ===== */
+$success = "";
+$error = "";
+
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -115,16 +130,34 @@ $username = $_SESSION['username'];
 
 
     <!-- FEEDBACK -->
-    <div class="card-custom mt-4">
-        <h5>Feedback</h5>
-        <form action="feedbacks.php" method="POST">
-            <input type="hidden" name="name" value="<?php echo htmlspecialchars($username); ?>">
-            <div class="mb-3">
-                <textarea name="feedback" class="form-control" rows="3" placeholder="Your Feedback" required></textarea>
-            </div>
-            <button class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    <!-- FEEDBACK -->
+<div class="card-custom mt-4">
+    <h5>Feedback</h5>
+
+    <!-- SUCCESS MESSAGE -->
+    <?php if (!empty($success)): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($success); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
+    <!-- ERROR MESSAGE -->
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($error); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
+
+    <form action="feedbacks.php" method="POST">
+        <div class="mb-3">
+            <textarea name="feedback" class="form-control" rows="3" 
+            placeholder="Your Feedback" required></textarea>
+        </div>
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>
 </div>
 </div>
 
