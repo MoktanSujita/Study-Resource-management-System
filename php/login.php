@@ -2,33 +2,44 @@
 session_start();
 include 'config.php';
 
-$error = ''; // Initialize error message
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    $stmt = $conn->prepare("SELECT * FROM tbl_users WHERE email = :email");
-    $stmt->execute([':email' => $email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        $stmt = $conn->prepare("SELECT * FROM tbl_users WHERE email = :email LIMIT 1");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['password'])) {
 
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        $_SESSION['user_id'] = $user['user_id'];
+            // Normalize role
+            $role = strtolower(trim($user['role']));
 
-        if ($user['role'] === 'admin') {
-            $_SESSION['admin_id'] = $user['user_id'];
-            header("Location: admin-dashboard.php");
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $role;
+            $_SESSION['user_id'] = $user['user_id'];
+
+            // Redirect based on role
+            if ($role === 'admin') {
+                $_SESSION['admin_id'] = $user['user_id'];
+                header("Location: admin-dashboard.php");
+            } else {
+                header("Location: ../php/student-dashboard.php");
+            }
+            exit();
+
         } else {
-            header("Location: ../php/student-dashboard.php");
+            $_SESSION['error'] = "Invalid email or password"; // set error
+            header("Location: login.php"); // redirect back to login
+            exit();
         }
-        exit();
 
-    } else {
-        $_SESSION['error'] = "Invalid email or password"; // Set error message 
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Database error: " . $e->getMessage();
+        header("Location: login.php");
+        exit();
     }
 }
 ?>
@@ -43,48 +54,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Favicon -->
-    <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="icon" type="image/png" href="../favicon.png">
 
   <style>
     body {
       margin: 0;
-      background: #e9e9e9; /* grey outer background */
+      background: #e9e9e9;
       font-family: Arial, sans-serif;
     }
-
     .page-wrapper {
       max-width: 1400px;
       margin: 40px auto;
       background: white;
       min-height: 90vh;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     .card {
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .select-wrapper { 
-      position: relative; 
-    }
-
-    .select-wrapper select {
-      appearance: none;
-      padding-right: 40px;
-    }
-
-    .select-arrow {
-      position: absolute;
-      top: 50%;
-      right: 15px;
-      transform: translateY(-50%);
-      pointer-events: none;
     }
   </style>
 </head>
@@ -99,33 +89,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
           <h3 class="text-center mb-3 fw-bold">Login</h3>
 
-<!-- Show error if login failed -->
-<?php if (!empty($_SESSION['error'])): ?>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <?= htmlspecialchars($_SESSION['error']); ?>
-  </div>
-  <?php unset($_SESSION['error']); ?>
-<?php endif; ?>
+          <!-- Show error if login failed -->
+          <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['error']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+          <?php endif; ?>
 
-<form method="post" action="" autocomplete="off">
-    <label class="form-label">Email</label>
-    <input type="email" name="email" class="form-control mb-3" placeholder="Email" required autocomplete="username">
+          <form method="post" action="" autocomplete="off">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control mb-3" placeholder="Email" required autocomplete="username">
 
-    <label class="form-label">Password</label>
-    <input type="password" name="password" class="form-control mb-3" placeholder="Password" required autocomplete="new-password">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control mb-3" placeholder="Password" required autocomplete="new-password">
 
-    <button type="submit" class="btn btn-primary w-100 py-2 fs-5">Login</button>
-</form>
-
+              <button type="submit" class="btn btn-primary w-100 py-2 fs-5">Login</button>
+          </form>
 
         </div>
       </div>
     </div>
   </div>
 </div>
-<!-- Bootstrap JS Bundle (includes Popper) -->
+
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
-

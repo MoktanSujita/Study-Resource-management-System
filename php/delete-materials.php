@@ -1,4 +1,8 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success'=>false, 'message'=>'Invalid request']);
+    exit();
+}
 session_start();
 require_once 'config.php';
 

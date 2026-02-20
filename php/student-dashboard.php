@@ -82,6 +82,10 @@ body { background-color: #f4f7fc; }
                         <?php endfor; ?>
                     </ul>
                 </li>
+                <!-- FEEDBACK RESPONSES -->
+                <li class="nav-item">
+                 <a class="nav-link" href="student-feedbacks.php">Responses</a>
+                </li>
 
                 <!--logout -->
                 <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>

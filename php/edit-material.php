@@ -2,6 +2,25 @@
 include 'config.php';
 require_once 'auth.php'; // includes session + config automatically
 
+$id = $_GET['id'] ?? null;
+
+if (!$id || !is_numeric($id)) {
+    die("Invalid material ID");
+}
+
+$id = (int)$id;
+$current_user_id = $_SESSION['user_id'];
+$is_admin = ($_SESSION['role'] ?? '') === 'admin';
+
+// Check owner
+$stmt = $conn->prepare("SELECT user_id FROM tbl_materials WHERE material_id = :id");
+$stmt->execute([':id' => $id]);
+$owner_id = $stmt->fetchColumn();
+
+if (!$is_admin && $owner_id != $current_user_id) {
+    die("Unauthorized access");
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['update'])) {
 
     $id    = $_POST['material_id'];

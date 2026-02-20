@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
          ]);
 
          $_SESSION['registered'] = true;
-         header("Location: ../templates/login.html");
+         header("Location:login.php");
          exit();
         } 
         catch(PDOException $e)

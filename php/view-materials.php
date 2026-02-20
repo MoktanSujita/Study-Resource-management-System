@@ -66,13 +66,17 @@ body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verda
     </div>
 
     <!-- SEMESTER BUTTONS -->
+    
     <div class="d-flex gap-2 mb-4 flex-wrap">
         <?php for($i=1;$i<=8;$i++):
             $sem_label = "Semester $i";
-            $active_class = ($selected_semester==$sem_label)?'btn-active':'btn-outline-primary';
+            $active_class = ($selected_semester==$sem_label)
+            ? 'btn-primary'
+            : 'btn-outline-primary';
         ?>
-            <a href="view-materials.php?sem=<?= urlencode($sem_label) ?>&type=<?= urlencode($selected_type) ?>" class="btn btn-sm <?= $active_class ?>">
-                Sem <?= $i ?>
+            <a href="view-materials.php?sem=<?= urlencode($sem_label) ?>&type=<?= urlencode($selected_type) ?>" 
+                class="btn btn-sm <?= $active_class ?>">
+                  Sem <?= $i ?>
             </a>
         <?php endfor; ?>
     </div>
@@ -94,19 +98,73 @@ body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verda
                 echo "<div class='subject-heading'>" . htmlspecialchars($current_subject) . "</div>";
             endif;
     ?>
-        <div class="card material-card mt-2 p-2">
+        <div class="card material-card mt-2 p-3">
+    <div class="d-flex justify-content-between align-items-start">
+
+        <!-- LEFT SIDE: File Info -->
+        <div>
             <a href="<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="file-link">
-                <i class="fa-regular fa-file-pdf text-danger me-1"></i> <?= htmlspecialchars($m['title']) ?>
+                <i class="fa-regular fa-file-pdf text-danger me-1"></i>
+                <?= htmlspecialchars($m['title']) ?>
             </a>
+
             <?php if(!empty($m['description'])): ?>
-                <p class="text-muted small mb-0"><?= htmlspecialchars($m['description']) ?></p>
+                <p class="text-muted small mb-0">
+                    <?= htmlspecialchars($m['description']) ?>
+                </p>
             <?php endif; ?>
         </div>
+
+        <!-- RIGHT SIDE: Admin Buttons -->
+        <?php if($is_admin): ?>
+            <div class="d-flex gap-2">
+                <a href="edit-form.php?id=<?= $m['material_id'] ?>" 
+                   class="btn btn-sm btn-outline-primary">
+                   <i class="fa-solid fa-pen"></i>
+                </a>
+
+                <button class="btn btn-sm btn-outline-danger delete-btn"
+                  data-id="<?= $m['material_id'] ?>">
+                   <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</div>
     <?php endforeach; endif; ?>
 
 </div>
 
 <div class="footer">© 2026 SRMS. All rights reserved.</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+
+        if (!confirm("Are you sure you want to delete this material?")) {
+            return;
+        }
+
+        let id = this.dataset.id;
+
+        fetch('delete-materials.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'id=' + id
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

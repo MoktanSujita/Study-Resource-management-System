@@ -1,4 +1,5 @@
 <?php
+include_once 'config.php';
 require 'auth.php'; // includes session + config
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload'])) {
